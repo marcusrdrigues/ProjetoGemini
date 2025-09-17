@@ -1,10 +1,30 @@
 spring.application.name=ProjetoGemini
 
-#Configs do Servidor
+# ==================================
+# CONFIGURAÇÕES DO SERVIDOR WEB
+# ==================================
 server.port=8084
 
-#Configs da API GEMINI
-gemini.api.key=COLOQUE_SUA_CHAVE_DE_API_AQUI
+spring.classformat.ignore=true
+
+# ==================================
+# CONFIGURAÇÕES DA API GEMINI
+# ==================================
+gemini.api.key=COLOQUE_SUA_CHAVE_DE_API_DO_GEMINI_AQUI
 gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gemini.api.key}
 
-spring.classformat.ignore=true
+# ==================================
+# CONFIGURAÇÃO DO BANCO DE DADOS POSTGRESQL
+# ==================================
+spring.datasource.url=jdbc:postgresql://localhost:5435/projetogemini_db
+spring.datasource.username=admin
+spring.datasource.password=admin
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# ==================================
+# CONFIGURAÇÃO DO HIBERNATE (JPA)
+# ==================================
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.show-sql=true
+

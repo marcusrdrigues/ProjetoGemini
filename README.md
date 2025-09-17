@@ -4,7 +4,7 @@
 
 Este é um projeto de API REST construída com **Spring Boot** que utiliza a inteligência artificial do **Google Gemini** para criar e organizar uma agenda de tarefas de forma inteligente.
 
-A API recebe um período de datas, uma descrição da disponibilidade de trabalho e uma lista de tarefas com suas respectivas prioridades e complexidades, e retorna um cronograma diário otimizado.
+A API recebe um conjunto de tarefas e retorna um cronograma otimizado, que é então **persistido em um banco de dados PostgreSQL** para consultas futuras.
 
 ---
 
@@ -13,23 +13,25 @@ A API recebe um período de datas, uma descrição da disponibilidade de trabalh
 -   **Backend:**
     -   Java 21
     -   Spring Boot 3
+    -   Spring Data JPA (Hibernate)
     -   Maven
 -   **Inteligência Artificial:**
     -   Google Gemini API
--   **Planejamento Futuro:**
-    -   Banco de Dados: PostgreSQL com Docker
-    -   Frontend: Angular
+-   **Banco de Dados:**
+    -   PostgreSQL
+    -   Docker & Docker Compose
 
 ---
 
 ## Como Executar o Projeto
 
-Siga os passos abaixo para configurar e executar a aplicação localmente.
+Siga os passos abaixo para configurar e executar a aplicação e sua infraestrutura localmente.
 
 ### Pré-requisitos
 
 -   Java (JDK) 21 ou superior
 -   Apache Maven 3.8 ou superior
+-   Docker e Docker Compose
 
 ### Passos para Configuração
 
@@ -39,17 +41,24 @@ Siga os passos abaixo para configurar e executar a aplicação localmente.
     cd ProjetoGemini
     ```
 
-2.  **⚠️ Configuração da Chave de API (Passo Obrigatório)**
+2.  **Inicie o Banco de Dados com Docker:**
+    O projeto inclui um arquivo `docker-compose.yml` para subir um container PostgreSQL com todas as configurações necessárias. Execute o comando na raiz do projeto:
+    ```bash
+    docker-compose up -d
+    ```
+    Isso iniciará o banco de dados em segundo plano na porta `5435`.
 
-    Este projeto precisa de uma chave de API do Google Gemini para funcionar. O arquivo de configuração com a chave **não** é enviado para o repositório por segurança. Você precisa criá-lo a partir do modelo de exemplo:
+3.  **⚠️ Configure as Variáveis de Ambiente (Passo Obrigatório)**
 
-    -   **Copie o arquivo de exemplo:** No terminal, na raiz do projeto, execute o comando:
+    Este projeto precisa de uma chave de API do Google Gemini para funcionar. Crie seu arquivo de configuração local a partir do modelo de exemplo:
+
+    -   **Copie o arquivo de exemplo:**
         ```bash
         cp src/main/resources/application.properties.example src/main/resources/application.properties
         ```
-    -   **Adicione sua chave:** Abra o novo arquivo `src/main/resources/application.properties` e substitua o valor `COLOQUE_SUA_CHAVE_DE_API_AQUI` pela sua chave de API real do Gemini.
+    -   **Adicione sua chave:** Abra o novo arquivo `src/main/resources/application.properties` e substitua o placeholder `COLOQUE_SUA_CHAVE_DE_API_DO_GEMINI_AQUI` pela sua chave real. As credenciais do banco já estão corretas para o ambiente Docker.
 
-3.  **Execute a Aplicação:**
+4.  **Execute a Aplicação:**
     Use o Maven para compilar e iniciar o servidor Spring Boot.
     ```bash
     mvn spring-boot:run
@@ -58,32 +67,34 @@ Siga os passos abaixo para configurar e executar a aplicação localmente.
 
 ---
 
-## Endpoint da API
+## Endpoints da API
 
-### Organizar Agenda
+### 1. Criar e Organizar Agenda
+
+Salva uma nova agenda no banco de dados após processá-la com a IA.
 
 -   **URL:** `/api/agenda`
 -   **Método:** `POST`
 -   **Corpo da Requisição (Body):**
-
     ```json
     {
         "dataInicio": "17/09/2025",
         "dataFim": "25/09/2025",
-        "descricao": "Horário de trabalho: Segundas a sextas das 09:00h as 18:00h com intervalo de almoço entre 14:30h e 15:30h",
-        "tarefas": [
-            {
-                "nome": "Desenvolvimento de API com integração com OpenAI",
-                "urgencia": "Alta",
-                "tempoEmHoras": 12,
-                "complexidade": "Alta"
-            },
-            {
-                "nome": "Backup de banco de dados SqlServer",
-                "urgencia": "Media",
-                "tempoEmHoras": 6,
-                "complexidade": "Media"
-            }
-        ]
+        "descricao": "...",
+        "tarefas": [ { "nome": "...", ... } ]
     }
     ```
+
+### 2. Buscar Agendas Salvas
+
+Busca agendas no banco de dados onde o resultado gerado pela IA contém uma palavra-chave específica.
+
+-   **URL:** `/api/agenda/buscar`
+-   **Método:** `GET`
+-   **Parâmetros de Query:**
+    -   `palavraChave` (obrigatório): O termo que você deseja buscar no resultado da agenda.
+-   **Exemplo de Uso:**
+    ```
+    http://localhost:8084/api/agenda/buscar?palavraChave=Angular
+    ```
+-   **Resposta de Sucesso:** Um array JSON contendo as agendas encontradas.

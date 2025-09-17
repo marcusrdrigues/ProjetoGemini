@@ -2,17 +2,25 @@ package br.com.cotiinformatica.services;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import com.google.gson.Gson;
 
 import br.com.cotiinformatica.dtos.AgendaDto;
 import br.com.cotiinformatica.dtos.gemini.GeminiContentDto;
 import br.com.cotiinformatica.dtos.gemini.GeminiGenerateContentDto;
 import br.com.cotiinformatica.dtos.gemini.GeminiPartRequestDto;
+import br.com.cotiinformatica.entities.AgendaSalva;
+import br.com.cotiinformatica.repositories.AgendaSalvaRepository;
 
 @Service
 public class GeminiService {
+	
+	@Autowired // Injetando o repositório
+	private AgendaSalvaRepository agendaSalvaRepository;
 	
 	@Value("${gemini.api.url}")
 	private String apiUrl;
@@ -56,6 +64,16 @@ public class GeminiService {
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();
+		
+		// Criar um objeto da entidade para salvar no banco de dados
+		AgendaSalva agendaSalva = new AgendaSalva();
+		
+		// Converter o DTO original para uma String JSON para guardar o que foi enviado
+		agendaSalva.setDadosEnviados(new Gson().toJson(dto)); // Convertendo o DTO para JSON
+		agendaSalva.setResultadoGemini(resposta); // Guardando a resposta do Gemini
+		
+		// Salva no banco de dados
+		agendaSalvaRepository.save(agendaSalva);
 		
 		return resposta;
 	}
