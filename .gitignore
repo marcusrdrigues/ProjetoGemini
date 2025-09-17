@@ -1,0 +1,50 @@
+# ===================================================================
+# Arquivo de configuração com segredos
+# NUNCA ENVIE ESTE ARQUIVO PARA O GIT
+# ===================================================================
+/src/main/resources/application.properties
+
+
+# ===================================================================
+# Arquivos de Sistema Operacional (macOS, Windows, etc.)
+# Suas solicitações estão aqui
+# ===================================================================
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+
+# ===================================================================
+# Saída de Build do Maven
+# Impede que os arquivos compilados (.jar, .class) sejam enviados
+# ===================================================================
+/target/
+
+
+# ===================================================================
+# Arquivos de Log
+# ===================================================================
+*.log
+*.log.*
+
+
+# ===================================================================
+# Arquivos de configuração de IDEs (IntelliJ, Eclipse, VSCode)
+# Mantém as configurações pessoais do seu editor fora do projeto
+# ===================================================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+/out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/

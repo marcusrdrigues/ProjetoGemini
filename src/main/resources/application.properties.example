@@ -1,0 +1,10 @@
+spring.application.name=ProjetoGemini
+
+#Configs do Servidor
+server.port=8084
+
+#Configs da API GEMINI
+gemini.api.key=COLOQUE_SUA_CHAVE_DE_API_AQUI
+gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gemini.api.key}
+
+spring.classformat.ignore=true
